@@ -1,6 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://h4b52tej70hl"]
+[gd_scene load_steps=4 format=3 uid="uid://h4b52tej70hl"]
+
+[ext_resource type="Script" uid="uid://d1akc6nrligm5" path="res://character_body_3d.gd" id="1_6fv6v"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_6acon"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_6fv6v"]
 
 [node name="World" type="Node3D"]
 
@@ -13,12 +17,17 @@ size = Vector3(16.1757, 1, 13.5958)
 transform = Transform3D(1, 0, 0, 0, -0.785198, 0.619245, 0, 0.619245, 0.785198, -3.29426, 6.03098, 9.21228)
 light_energy = 2.25
 
-[node name="CharacterBody3D" type="CharacterBody3D" parent="."]
+[node name="Player" type="CharacterBody3D" parent="."]
 slide_on_ceiling = false
+script = ExtResource("1_6fv6v")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.932483, 0)
 shape = SubResource("CapsuleShape3D_6acon")
 
-[node name="Camera3D" type="Camera3D" parent="CharacterBody3D"]
+[node name="Camera3D" type="Camera3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.43912, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.947011, 0)
+mesh = SubResource("CapsuleMesh_6fv6v")
