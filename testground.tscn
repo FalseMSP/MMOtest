@@ -1,0 +1,24 @@
+[gd_scene load_steps=2 format=3 uid="uid://h4b52tej70hl"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_6acon"]
+
+[node name="World" type="Node3D"]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.28599, -0.462105, -0.0614395)
+use_collision = true
+size = Vector3(16.1757, 1, 13.5958)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -0.785198, 0.619245, 0, 0.619245, 0.785198, -3.29426, 6.03098, 9.21228)
+light_energy = 2.25
+
+[node name="CharacterBody3D" type="CharacterBody3D" parent="."]
+slide_on_ceiling = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.932483, 0)
+shape = SubResource("CapsuleShape3D_6acon")
+
+[node name="Camera3D" type="Camera3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.43912, 0)
