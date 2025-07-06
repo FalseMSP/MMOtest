@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3 uid="uid://5bcsx6ftgp0q"]
+
+[ext_resource type="Script" uid="uid://b6pr5lr0dlbt" path="res://projectile.gd" id="1_a85iw"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_qxf0c"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_a85iw"]
+size = Vector3(1.04144, 1.01129, 1.00208)
+
+[node name="projectile" type="RigidBody3D"]
+script = ExtResource("1_a85iw")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_qxf0c")
+
+[node name="bullet_collision" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_a85iw")
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="area_shape" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0113573, -0.00896043, -0.0115771)
+shape = SubResource("BoxShape3D_a85iw")
+
+[connection signal="area_entered" from="Area3D" to="." method="_on_area_3d_area_entered"]

@@ -1,13 +1,17 @@
-[gd_scene load_steps=7 format=3 uid="uid://h4b52tej70hl"]
+[gd_scene load_steps=9 format=3 uid="uid://h4b52tej70hl"]
 
 [ext_resource type="Script" uid="uid://d1akc6nrligm5" path="res://character_body_3d.gd" id="1_6fv6v"]
 [ext_resource type="Script" uid="uid://cwblv6ja1aef2" path="res://WeaponSystem.gd" id="2_8bj8j"]
+[ext_resource type="Script" uid="uid://c4adykodr1mwj" path="res://target.gd" id="2_m32x0"]
 [ext_resource type="PackedScene" uid="uid://5bcsx6ftgp0q" path="res://projectile.tscn" id="3_77d2g"]
-[ext_resource type="PackedScene" uid="uid://dm0undw5vqsmp" path="res://target.tscn" id="4_77d2g"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_6acon"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_6fv6v"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_8bj8j"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_6fv6v"]
 
 [node name="World" type="Node3D"]
 
@@ -54,4 +58,13 @@ mesh = SubResource("CapsuleMesh_6fv6v")
 script = ExtResource("2_8bj8j")
 projectile_scene = ExtResource("3_77d2g")
 
-[node name="Target" parent="." instance=ExtResource("4_77d2g")]
+[node name="Target" type="StaticBody3D" parent="."]
+script = ExtResource("2_m32x0")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Target"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.84295, 0)
+mesh = SubResource("SphereMesh_8bj8j")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Target"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.84613, 0)
+shape = SubResource("SphereShape3D_6fv6v")

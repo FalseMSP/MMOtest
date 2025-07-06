@@ -1,32 +1,34 @@
 [gd_scene load_steps=7 format=3 uid="uid://h4b52tej70hl"]
 
 [ext_resource type="Script" uid="uid://d1akc6nrligm5" path="res://character_body_3d.gd" id="1_6fv6v"]
-[ext_resource type="Script" uid="uid://cwblv6ja1aef2" path="res://WeaponSystem.gd" id="2_8bj8j"]
-[ext_resource type="PackedScene" uid="uid://5bcsx6ftgp0q" path="res://projectile.tscn" id="3_77d2g"]
-[ext_resource type="PackedScene" uid="uid://dm0undw5vqsmp" path="res://target.tscn" id="4_77d2g"]
+[ext_resource type="Script" uid="uid://c4adykodr1mwj" path="res://target.gd" id="2_m32x0"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_6acon"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_6fv6v"]
 
+[sub_resource type="SphereMesh" id="SphereMesh_8bj8j"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_6fv6v"]
+
 [node name="World" type="Node3D"]
 
-[node name="TestBoxes" type="CSGBox3D" parent="."]
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.69, -0.462105, -10.1921)
 use_collision = true
 size = Vector3(77.6814, 1, 68.9712)
 
-[node name="TestBoxes2" type="CSGBox3D" parent="."]
+[node name="CSGBox3D2" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.2118, 5.75414, 20.7481)
 use_collision = true
 size = Vector3(25.1325, 13.4325, 7.09095)
 
-[node name="TestBoxes4" type="CSGBox3D" parent="."]
+[node name="CSGBox3D4" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.8806, 5.75414, -11.6492)
 use_collision = true
 size = Vector3(25.1325, 13.4325, 2.11774)
 
-[node name="TestBoxes3" type="CSGBox3D" parent="."]
+[node name="CSGBox3D3" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.16267, 5.75414, -35.9617)
 use_collision = true
 size = Vector3(25.1325, 13.4325, 7.09095)
@@ -50,8 +52,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.43912, 0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.947011, 0)
 mesh = SubResource("CapsuleMesh_6fv6v")
 
-[node name="WeaponSystem" type="Node3D" parent="Player"]
-script = ExtResource("2_8bj8j")
-projectile_scene = ExtResource("3_77d2g")
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+script = ExtResource("2_m32x0")
 
-[node name="Target" parent="." instance=ExtResource("4_77d2g")]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.84295, 0)
+mesh = SubResource("SphereMesh_8bj8j")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.84613, 0)
+shape = SubResource("SphereShape3D_6fv6v")

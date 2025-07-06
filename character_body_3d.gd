@@ -60,6 +60,10 @@ extends CharacterBody3D
 @onready var mesh_instance: MeshInstance3D = $MeshInstance3D
 @onready var collision_shape: CollisionShape3D = $CollisionShape3D
 
+@onready var weapon_system: Node3D = $WeaponSystem
+var camera_recoil_pitch: float = 0.0
+var camera_recoil_yaw: float = 0.0
+
 # Internal variables
 var camera_pitch: float = 0.0
 var gravity: float = 50.0  # Higher gravity for snappier feel
@@ -146,6 +150,11 @@ func _physics_process(delta):
 	
 	# Handle dive landing and transitions
 	handle_dive_landing()
+	
+	# Update weapon debug info
+	if weapon_system:
+		var weapon_info = weapon_system.get_ammo_info()
+		# Add weapon info to debug display if you have one
 	
 	# Update floor state
 	was_on_floor = is_on_floor()
@@ -472,8 +481,28 @@ func start_slide():
 	slide_direction = -transform.basis.z  # Forward direction
 	can_slide = false
 	
+	# Preserve momentum if current speed is higher than slide_speed
+	var current_speed = get_real_velocity().length()
+	var slide_velocity_magnitude = max(slide_speed, current_speed)
+	
+	# Use current movement direction if available, otherwise use forward direction
+	var input_dir = get_input_direction()
+	if input_dir.length() > 0:
+		slide_direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+	else:
+		# If no input, use current velocity direction if moving fast enough
+		if current_speed > slide_speed:
+			slide_direction = get_horizontal_velocity().normalized()
+		else:
+			slide_direction = -transform.basis.z  # Forward direction
+	
+	# Apply the slide velocity with preserved momentum
+	velocity.x = slide_direction.x * slide_velocity_magnitude
+	velocity.z = slide_direction.z * slide_velocity_magnitude
+	
 	# Set slide cooldown
 	get_tree().create_timer(slide_cooldown).timeout.connect(_on_slide_cooldown)
+
 
 func end_slide():
 	is_sliding = false
@@ -567,10 +596,13 @@ func handle_roll_movement(direction: Vector3, delta: float):
 	velocity.z = roll_vel.z
 
 func handle_slide_movement(delta):
-	# Apply slide movement in slide direction
-	var slide_vel = slide_direction * slide_speed
+	# Get current slide speed
+	var current_slide_speed = Vector3(velocity.x, 0, velocity.z).length()
 	
-	# Gradually reduce slide speed
+	# Apply slide movement in slide direction
+	var slide_vel = slide_direction * current_slide_speed
+	
+	# Gradually reduce slide speed, but don't go below minimum slide_speed initially
 	var friction_factor = 1.0 - (slide_friction * delta)
 	slide_vel *= friction_factor
 	
@@ -677,9 +709,23 @@ func get_current_state() -> String:
 	else:
 		return "Walking"
 
+# Add this method to your player script
+func apply_recoil(pitch: float, yaw: float):
+	# Apply recoil immediately to camera rotation
+	camera_pitch -= deg_to_rad(pitch)
+	camera_pitch = clamp(camera_pitch, deg_to_rad(camera_min_pitch), deg_to_rad(camera_max_pitch))
+	
+	# Apply yaw recoil to character body
+	rotate_y(deg_to_rad(yaw))
+	
+	# Update camera rotation immediately
+	camera_3d.rotation.x = camera_pitch
+
+# Add to your _physics_process function
+
 # Debug info
 func get_debug_info() -> Dictionary:
-	return {
+	var info = {
 		"Speed": "%.1f" % get_movement_speed(),
 		"State": get_current_state(),
 		"On Floor": is_on_floor(),
@@ -695,3 +741,11 @@ func get_debug_info() -> Dictionary:
 		"Height Above Ground": "%.1f" % get_height_above_ground(),
 		"Wall Normal": "%.2f, %.2f, %.2f" % [wall_normal.x, wall_normal.y, wall_normal.z] if wall_normal != Vector3.ZERO else "None"
 	}
+	
+	# Add weapon info
+	if weapon_system:
+		var weapon_info = weapon_system.get_ammo_info()
+		info["Ammo"] = "%d/%d" % [weapon_info.current, weapon_info.capacity]
+		info["Reloading"] = weapon_info.is_reloading
+	
+	return info
